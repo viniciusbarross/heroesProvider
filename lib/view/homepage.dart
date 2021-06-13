@@ -12,26 +12,48 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  _buildList(HeroesController heroController) {
+  _buildList() {
+    HeroesController heroesController = Provider.of<HeroesController>(context);
     return ListView.builder(
-      itemCount: heroController.heroes.length,
+      itemCount: heroesController.heroes.length,
       itemBuilder: (context, index) {
-        return _buildItems(heroController.heroes[index]);
+        return _buildItems(heroesController.heroes[index]);
       },
     );
   }
 
   _buildItems(HeroeModel heroeModel) {
-    return ListTile(title: Text(heroeModel.nome));
+    HeroesController heroesController = Provider.of<HeroesController>(context);
+    return ListTile(
+      onTap: () {
+        heroesController.checkFavorite(heroeModel);
+      },
+      title: Text(heroeModel.nome),
+      trailing: heroeModel.isFavorite
+          ? Icon(Icons.star, color: Colors.amber)
+          : Icon(Icons.star_border),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home')),
+      appBar: AppBar(
+        title: Text('Home'),
+        leading: Consumer<HeroesController>(
+          builder: (context, value, child) {
+            return Center(
+              child: Text(value.heroes
+                  .where((element) => element.isFavorite)
+                  .length
+                  .toString()),
+            );
+          },
+        ),
+      ),
       body: Consumer<HeroesController>(
           builder: (context, heroeController, widget) {
-        return _buildList(heroeController);
+        return _buildList();
       }),
     );
   }

@@ -12,7 +12,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [Provider<HeroesController>.value(value: HeroesController())],
+      providers: [
+        ChangeNotifierProvider<HeroesController>.value(
+            value: HeroesController())
+      ],
       child: MaterialApp(
         title: 'Heroes',
         theme: ThemeData(
